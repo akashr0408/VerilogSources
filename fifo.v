@@ -4,7 +4,7 @@
 module fifo
 #(
    parameter WIDTH = 32,
-   parameter DEPTH = 32
+   parameter DEPTH = 32,
    parameter ADDR_WIDTH = 5
    )(
       aresetn,
@@ -20,7 +20,6 @@ module fifo
    input                      clock;
    input                      read_or_write;
    input    [WIDTH-1:0]       data_in;
-   input    [ADDR_WIDTH]      addr;
    output                     empty;
    output                     full;
    output   [WIDTH-1:0]       data_out;
@@ -38,13 +37,13 @@ module fifo
       end
       else
       begin
-         if read_or_write
+         if (read_or_write)
          begin
-            if write_ptr == 5'h15
+            if (write_ptr == 5'h15)
             begin
                full <= 1;
             end
-            if !full
+            if (!full)
             begin
                fifo_reg_file[write_ptr] <= data_in;
                write_ptr <= write_ptr + 1;
@@ -55,9 +54,9 @@ module fifo
             data_out <= fifo_reg_file[0];
             fifo_reg_file[0:ADDR_WIDTH-2] <= fifo_reg_file[1:ADDR_WIDTH-1];
             full <= 0;
-            if !full
+            if (!full)
             begin
-               write_ptr <- write_ptr - 1;
+               write_ptr <= write_ptr - 1;
             end
          end
       end
